@@ -1,42 +1,4 @@
 return {
-  { "nvim-lspconfig", enabled = false },
-  { "hrsh7th/nvim-cmp", enabled = false },
-  {
-    "neoclide/coc.nvim",
-    branch = "release",
-    config = function()
-      vim.g.coc_global_extensions = {
-        "coc-json",
-        "coc-html",
-        "coc-tsserver",
-        "coc-eslint",
-        "@moliyu/coc-unocss",
-        "coc-lua",
-        "coc-rust-analyzer",
-        "@yaegassy/coc-volar",
-        "coc-snippets",
-      }
-    end,
-  },
-  {
-    "fannheyward/telescope-coc.nvim",
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    config = function()
-      require("telescope").setup({
-        extensions = {
-          coc = {
-            -- theme = "ivy",
-            prefer_locations = false, -- always use Telescope locations to preview definitions/declarations/implementations etc
-            push_cursor_on_edit = true, -- save the cursor position to jump back in the future
-            -- timeout = 3000, -- timeout for coc commands
-          },
-        },
-      })
-      require("telescope").load_extension("coc")
-    end,
-  },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -47,19 +9,62 @@ return {
       },
     },
   },
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   opts = {
-  --     servers = {
-  --       eslint = {
-  --         on_attach = function(client, bufnr)
-  --           vim.api.nvim_create_autocmd("BufWritePre", {
-  --             buffer = bufnr,
-  --             command = "EslintFixAll",
-  --           })
-  --         end,
-  --       },
-  --     },
-  --   },
-  -- },
+  {
+    "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      local util = require("lspconfig.util")
+      local configs = require("lspconfig.configs")
+      configs.uno = {
+        default_config = {
+          cmd = { "unocss-lsp", "--stdio" },
+          -- cmd = { "node", "--inspect", "/Users/doudou/work/unocss/packages/lsp-unocss/out/index.js", "--stdio" },
+          filetypes = {
+            "html",
+            "javascriptreact",
+            "rescript",
+            "typescriptreact",
+            "vue",
+            "svelte",
+          },
+          root_dir = function(fname)
+            return util.root_pattern("unocss.config.js", "unocss.config.ts", "uno.config.js", "uno.config.ts")(fname)
+          end,
+        },
+      }
+      require("lspconfig").uno.setup({})
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        eslint = {
+          on_attach = function(client, bufnr)
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              command = "EslintFixAll",
+            })
+          end,
+        },
+      },
+    },
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "windwp/nvim-autopairs",
+      opts = {},
+    },
+    opts = function(_, opts)
+      local cmp = require("cmp")
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      opts.mapping = vim.tbl_extend("force", opts.mapping, {
+        ["<CR>"] = cmp.mapping.confirm({
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+        }),
+      })
+    end,
+  },
 }

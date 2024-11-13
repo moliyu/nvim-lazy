@@ -17,7 +17,12 @@ return {
       configs.uno = {
         default_config = {
           cmd = { "unocss-lsp", "--stdio" },
-          -- cmd = { "node", "--inspect", "/Users/doudou/work/unocss/packages/lsp-unocss/out/index.js", "--stdio" },
+          -- cmd = {
+          --   "node",
+          --   "--inspect",
+          --   "/home/doudou/work/coc-unocss/packages/lsp-unocss/out/index.js",
+          --   "--stdio",
+          -- },
           filetypes = {
             "html",
             "javascriptreact",

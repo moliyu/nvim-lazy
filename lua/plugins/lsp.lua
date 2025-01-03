@@ -42,7 +42,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
-      servers = {
+      servers = { -- eslint auto fix
         eslint = {
           on_attach = function(client, bufnr)
             vim.api.nvim_create_autocmd("BufWritePre", {

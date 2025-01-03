@@ -54,22 +54,4 @@ return {
       },
     },
   },
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "windwp/nvim-autopairs",
-      opts = {},
-    },
-    opts = function(_, opts)
-      local cmp = require("cmp")
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-      opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<CR>"] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        }),
-      })
-    end,
-  },
 }
